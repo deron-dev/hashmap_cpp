@@ -4,4 +4,3 @@ A hashmap implementation I wrote for some coursework. Some things are missing/in
 ## TODO:
 
 - create hashmap::rehash()
-- 
