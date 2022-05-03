@@ -1,4 +1,9 @@
 
+all: demo
+
+demo: demo.cpp
+	g++ demo.cpp -o demo.out
+
 # old testing from class
 
 TEST_CASES=tests/01.output tests/02.output tests/03.output tests/04.output tests/05.output tests/06.output
