@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef HASHMAP_H
+#define HASHMAP_H
+
 #include "dynamic_array.hpp"
 #include "entry.hpp"
 #include "djk33.hpp"
@@ -132,3 +135,6 @@ class hashmap
 
     ~hashmap() {}
 };
+
+
+#endif

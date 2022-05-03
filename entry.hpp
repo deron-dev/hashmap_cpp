@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef ENTRY_H
+#define ENTRY_H
+
 template <typename K, typename V, typename M>
 class entry
 {
@@ -33,3 +36,6 @@ class entry
         // TODO: ask about the above line
     }
 };
+
+
+#endif

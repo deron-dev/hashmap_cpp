@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef DYNAMIC_ARRAY_H
+#define DYNAMIC_ARRAY_H
+
 template <typename T>
 class array
 {
@@ -131,3 +134,6 @@ class array
         return newdata;
     }
 };
+
+
+#endif

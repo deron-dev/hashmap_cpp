@@ -4,3 +4,7 @@ A hashmap implementation I wrote for some coursework. Some things are missing/in
 ## TODO:
 
 - create hashmap::rehash()
+
+## Notes
+
+`solution_custom.cpp`, `solution_std.cpp`, `tests/` and the usage of them in the `Makefile` are remnants from the coursework. They are meant for local testing now.

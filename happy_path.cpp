@@ -1,3 +1,8 @@
+/*
+    This file is meant to be a full test of all functionalities of this project.
+    It is currently unfinished.
+*/
+
 // ========== INCLUDE ==========
 #include <iostream>
 #include <iomanip>
