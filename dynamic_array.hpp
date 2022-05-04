@@ -110,7 +110,7 @@ class array
         T* bucket = (T*) malloc( sizeof(T) * count );
         for ( int lcv = 0; lcv < count; lcv++ )
         {
-            bucket[lcv] = pop();
+            bucket[lcv] = data[lcv];
         }
         return bucket;
     }

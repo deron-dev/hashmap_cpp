@@ -11,6 +11,8 @@
 #define INITIAL_HASH_DIST_WIDTH 10
 #define TRANSLATION_NULL_VAL -1
 #define ENTRY_META_TERMINATOR -1
+#define LOAD_FACTOR_THRESHOLD 0.1 // TODO: change to higher
+#define REHASH_DIST_WIDTH_INC_FACTOR 4
 
 #include "dynamic_array.hpp"
 #include "entry.hpp"
@@ -66,6 +68,37 @@ class hashmap
         }
     }
 
+    void load_factor_eval()
+    {
+        update_load_factor();
+        if ( load_factor > LOAD_FACTOR_THRESHOLD )
+        {
+            rehash();
+        }
+    }
+
+    void rehash()
+    {
+        // save entry count
+        unsigned int e_ct = entries.count;
+
+        // make a copy of entries
+        entry<std::string,V,int>* bucket = entries.dump();
+
+        // clear translation, entries, and entry count
+        // entries.count = 0;
+        translation.fill(TRANSLATION_NULL_VAL);
+
+        // multiply distribution width
+        translation.reserve( translation.capacity * REHASH_DIST_WIDTH_INC_FACTOR );
+
+        // push entries onto expanded distribution
+        for ( unsigned int lcv = 0; lcv < e_ct; lcv++ )
+        {
+            push( bucket[lcv] );
+        }
+    }
+
     entry<K,V,int>* locate_entry( std::string lookup_key )
     {
         // ptr to traverse entries
@@ -117,7 +150,6 @@ class hashmap
 
     void push( entry<std::string,V,int> newentry )
     {
-        // TODO: rehash if necessary
 
         int* translation_value;
         entry<std::string,V,int>* eptr;
@@ -164,7 +196,7 @@ class hashmap
 
             int trash = 0; // TODO: remove testing
         }
-
+        // load_factor_eval();
     }
 
     void unmap( std::string lookup_key )

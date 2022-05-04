@@ -37,7 +37,9 @@ int main()
         themap.visualize();
     }
 
-    // themap.visualize();
+    themap.load_factor_eval();
+
+    themap.visualize();
 
 
     return 0;
