@@ -1,8 +1,12 @@
 
-all: demo
+all: compile_demo
 
-demo: demo.cpp
+compile_demo: demo.cpp
 	g++ demo.cpp -o demo.out
+
+demo_test:
+	make demo
+	./demo.out
 
 # old testing from class
 
@@ -17,7 +21,7 @@ custom: solution_custom.cpp
 tests/%.output: tests/%.input solution.out
 	@./solution.out < $< > $@ || (echo "Failed to run test case: '$<'" && rm $@)
 
-test: $(TEST_CASES) check
+test_old: $(TEST_CASES) check
 
 check:
 	@for i in tests/*.expected ; do \
