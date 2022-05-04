@@ -4,8 +4,8 @@ all: compile_demo
 compile_demo: demo.cpp
 	g++ demo.cpp -o demo.out
 
-demo_test:
-	make demo
+test:
+	make compile_demo
 	./demo.out
 
 # old testing from class
