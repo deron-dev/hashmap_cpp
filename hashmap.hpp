@@ -51,6 +51,19 @@ class hashmap
         return djk33( wkey ) % translation.capacity;
     }
 
+    bool key_exists( std::string lookup_key )
+    {
+        try
+        {
+            locate_entry( lookup_key );
+            return true;
+        }
+        catch ( std::runtime_error )
+        {
+            return false;
+        }
+    }
+
     entry<K,V,int>* locate_entry( std::string lookup_key )
     {
         // ptr to traverse entries
