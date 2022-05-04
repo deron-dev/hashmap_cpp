@@ -50,40 +50,90 @@ class hashmap
         // hash key, apply distribution width, return
         return djk33( wkey ) % translation.capacity;
     }
-        entry<std::string,V,int>* eptr = NULL;
-        // generate hash and apply to distribution
-        unsigned int t_index = djk33(lookup_key) % translation.capacity;
-        int translation_record = translation[t_index];
 
-        // translation record indiactes nonexistent key
-        if ( translation_record == -1 )
+    entry<K,V,int>* locate_entry( std::string lookup_key )
+    {
+        // ptr to traverse entries
+        entry<std::string,V,int>* eptr = NULL;
+
+        // hash lookup_key to determine the translation index
+        unsigned int t_index = hash( lookup_key ); // translation index
+        int translation_value = translation[t_index];
+
+        // translation does not point to an entry -- no entry for lookup_key
+        if ( translation_value == TRANSLATION_NULL_VAL )
         {
             throw std::runtime_error
             (
-                "hashmap::[](std::string lookup_key) " \
-                "no translation for key \"" + lookup_key + "\"; i.e., "\
-                "key does not exist in map"
+                "hashmap::locate_entry" \
+                "||| no translation for key '" + lookup_key + "'"
             );
         }
-        // follow translation to entry
-        eptr = &entries[translation_record];
-        // while current entry does not match lookup_key, go to the next
-        // ...entry with the same hash using the meta value
-        while ( eptr->key != lookup_key && eptr->meta != -1 )
+        // translation key points to an entry
+        else
+        {
+            // parse through entries
+            eptr = &entries[translation_value];
+
+            // while current entry key is nonmatching and the entry meta does
+            //      not indicate being the last entry w/ the t_index translation
+            while ( eptr->key != lookup_key && eptr->meta != TRANSLATION_NULL_VAL )
         {
             eptr = &entries[eptr->meta];
         }
         if ( eptr->key == lookup_key )
         {
-            return eptr->value;
+                return eptr;
         }
         else
         {
             throw std::runtime_error
             (
-                "key \"" + lookup_key + "\" does not exist in map"
+                    "key '" + lookup_key + "' does not exist in map"
             );
         }
+        }
+    }
+
+    V& operator[]( std::string lookup_key )
+    {
+        return locate_entry( lookup_key )->value;
+        // entry<std::string,V,int>* eptr = NULL;
+
+        // // generate hash and apply to distribution
+        // unsigned int t_index = hash( lookup_key );
+
+        // int translation_value = translation[t_index];
+
+        // // translation record indiactes nonexistent key
+        // if ( translation_value == TRANSLATION_NULL_VAL )
+        // {
+        //     throw std::runtime_error
+        //     (
+        //         "hashmap::[](std::string lookup_key) " \
+        //         "no translation for key \"" + lookup_key + "\"; i.e., "\
+        //         "key does not exist in map"
+        //     );
+        // }
+        // // follow translation to entry
+        // eptr = &entries[translation_value];
+        // // while current entry does not match lookup_key, go to the next
+        // // ...entry with the same hash using the meta value
+        // while ( eptr->key != lookup_key && eptr->meta != TRANSLATION_NULL_VAL )
+        // {
+        //     eptr = &entries[eptr->meta];
+        // }
+        // if ( eptr->key == lookup_key )
+        // {
+        //     return eptr->value;
+        // }
+        // else
+        // {
+        //     throw std::runtime_error
+        //     (
+        //         "key \"" + lookup_key + "\" does not exist in map"
+        //     );
+        // }
 
     }
 
