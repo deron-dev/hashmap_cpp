@@ -113,94 +113,93 @@ class hashmap
     V& operator[]( std::string lookup_key )
     {
         return locate_entry( lookup_key )->value;
-        // entry<std::string,V,int>* eptr = NULL;
-
-        // // generate hash and apply to distribution
-        // unsigned int t_index = hash( lookup_key );
-
-        // int translation_value = translation[t_index];
-
-        // // translation record indiactes nonexistent key
-        // if ( translation_value == TRANSLATION_NULL_VAL )
-        // {
-        //     throw std::runtime_error
-        //     (
-        //         "hashmap::[](std::string lookup_key) " \
-        //         "no translation for key \"" + lookup_key + "\"; i.e., "\
-        //         "key does not exist in map"
-        //     );
-        // }
-        // // follow translation to entry
-        // eptr = &entries[translation_value];
-        // // while current entry does not match lookup_key, go to the next
-        // // ...entry with the same hash using the meta value
-        // while ( eptr->key != lookup_key && eptr->meta != TRANSLATION_NULL_VAL )
-        // {
-        //     eptr = &entries[eptr->meta];
-        // }
-        // if ( eptr->key == lookup_key )
-        // {
-        //     return eptr->value;
-        // }
-        // else
-        // {
-        //     throw std::runtime_error
-        //     (
-        //         "key \"" + lookup_key + "\" does not exist in map"
-        //     );
-        // }
-
     }
 
-    void push( entry<K,V,int> newentry )
+    void push( entry<std::string,V,int> newentry )
     {
         // TODO: rehash if necessary
 
-        bool dupe = false; // key duplication indicator
-        unsigned int t_index; // translation record index
-        int* translation_record;
-
-        // generate hash and apply hash to distribution
-        t_index = djk33( newentry.key ) % translation.capacity;
-        // select corresponding translation record
-        translation_record = &translation[t_index];
-
-        // if the hash has not been translated
-        if ( *translation_record == TRANSLATION_NULL_VAL )
+        if ( key_exists(newentry.key) )
         {
-            // update translation record with new entry's index
-            *translation_record = entries.count;
-            // set new entry's index to terminator
-            newentry.meta = ENTRY_META_TERMINATOR;
-            // push new entry
-            entries.push( newentry );
+            throw std::runtime_error
+            (
+                "key \"" + newentry.key + "\" already exists;"
+            );
         }
         else
         {
-            // check for duplicate keys
-            try
+            // get translation
+            unsigned int t_index = hash( newentry.key );
+            int* translation_value = &translation[t_index];
+
+            if ( *translation_value != TRANSLATION_NULL_VAL )
             {
-                operator[](newentry.key);
-                dupe = true;
+                // point to last entry added to current translation
+                entry<std::string,V,int>* eptr = &entries[*translation_value];
+
+                // update the formerly last entry of the translation
+                //      to point at the new entry's index
+                eptr->meta = entries.count - 1;
             }
-            // catch runtime errors
-            catch (std::runtime_error)
-            {
-                // record old translation to new entry's meta
-                newentry.meta = *translation_record;
-                // update translation record with new entry's index
-                *translation_record = entries.count;
-                // push new entry;
-                entries.push( newentry );
-            }
-            if (dupe)
-            {
-                throw std::runtime_error
-                (
-                    "key \"" + newentry.key + "\" already exists;"
-                );
-            }
+
+            // update new entry's meta value to terminator
+            newentry.meta = ENTRY_META_TERMINATOR;
+
+            // push newentry
+            entries.push( newentry );
+
+            // update translation
+            *translation_value = entries.count - 1;
+
         }
+
+        // ===
+
+        // bool dupe = false; // key duplication indicator
+        // unsigned int t_index; // translation record index
+        // int* translation_record;
+
+        // // generate hash and apply hash to distribution
+        // t_index = djk33( newentry.key ) % translation.capacity;
+        // // select corresponding translation record
+        // translation_record = &translation[t_index];
+
+        // // if the hash has not been translated
+        // if ( *translation_record == TRANSLATION_NULL_VAL )
+        // {
+        //     // update translation record with new entry's index
+        //     *translation_record = entries.count;
+        //     // set new entry's index to terminator
+        //     newentry.meta = ENTRY_META_TERMINATOR;
+        //     // push new entry
+        //     entries.push( newentry );
+        // }
+        // else
+        // {
+        //     // check for duplicate keys
+        //     try
+        //     {
+        //         operator[](newentry.key);
+        //         dupe = true;
+        //     }
+        //     // catch runtime errors
+        //     catch (std::runtime_error)
+        //     {
+        //         // record old translation to new entry's meta
+        //         newentry.meta = *translation_record;
+        //         // update translation record with new entry's index
+        //         *translation_record = entries.count;
+        //         // push new entry;
+        //         entries.push( newentry );
+        //     }
+        //     if (dupe)
+        //     {
+        //         throw std::runtime_error
+        //         (
+        //             "key \"" + newentry.key + "\" already exists;"
+        //         );
+        //     }
+        // }
     }
 
     // void unmap( std::string lookup_key )
