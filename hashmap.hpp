@@ -78,20 +78,20 @@ class hashmap
             // while current entry key is nonmatching and the entry meta does
             //      not indicate being the last entry w/ the t_index translation
             while ( eptr->key != lookup_key && eptr->meta != TRANSLATION_NULL_VAL )
-        {
-            eptr = &entries[eptr->meta];
-        }
-        if ( eptr->key == lookup_key )
-        {
+            {
+                eptr = &entries[eptr->meta];
+            }
+            if ( eptr->key == lookup_key )
+            {
                 return eptr;
-        }
-        else
-        {
-            throw std::runtime_error
-            (
+            }
+            else
+            {
+                throw std::runtime_error
+                (
                     "key '" + lookup_key + "' does not exist in map"
-            );
-        }
+                );
+            }
         }
     }
 
