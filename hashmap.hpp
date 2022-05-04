@@ -1,3 +1,9 @@
+
+// TODO: visualization of hashmap
+// TODO: delete mapping
+// TODO: rehash
+// TODO: allow more/any data type keys
+
 #pragma once
 
 #ifndef HASHMAP_H
@@ -11,6 +17,7 @@
 // the default initial capacity of the translation array
 const unsigned int INITIAL_HASH_DIST_WIDTH = 100;
 
+// this implementation of a hashmap currently only works with string-type keys
 template <typename K, typename V>
 class hashmap
 {
@@ -107,7 +114,7 @@ class hashmap
                 operator[](newentry.key);
                 dupe = true;
             }
-            // catch not found error
+            // catch runtime errors
             catch (std::runtime_error)
             {
                 // record old translation to new entry's meta
@@ -131,6 +138,54 @@ class hashmap
     {
         load_factor = (long double) entries.count /
                       (long double) translation.capacity;
+    }
+
+    void visualize()
+    {
+        entry<K,V,int> wentry;
+        int wtranslation;
+        int t_index;
+        int e_index;
+
+        // parse translation array
+        for ( t_index = 0; t_index < translation.capacity; t_index++ )
+        {
+            // current translation => wtranslation
+            wtranslation = translation[t_index];
+
+            // check for empty translation
+            if ( wtranslation != -1 )
+            {
+                // output translation index and value
+                std::cout << t_index << ": " << wtranslation << std::endl;
+
+                // parse entries from current translation until last entry
+                e_index = wtranslation;
+                while ( entries[e_index].meta != -1 )
+                {
+                    // current entry => wentry
+                    wentry = entries[e_index];
+
+                    // output entry's key/value pair
+                    std::cout << "- " << wentry.key << " --> " << wentry.value << std::endl;
+
+                    // update e_index to next entry to seek to
+                    e_index = wentry.meta;
+                }
+                // output last entry
+
+                // current entry => wentry
+                wentry = entries[e_index];
+
+                // output entry's key/value pair
+                std::cout << "- " << wentry.key << " --> " << wentry.value << std::endl;
+            }
+            else
+            {
+                std::cout << t_index << ": " << wtranslation << std::endl;
+            }
+
+        }
     }
 
     ~hashmap() {}
