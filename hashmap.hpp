@@ -11,7 +11,7 @@
 #define INITIAL_HASH_DIST_WIDTH 10
 #define TRANSLATION_NULL_VAL -1
 #define ENTRY_META_TERMINATOR -1
-#define LOAD_FACTOR_THRESHOLD 0.1 // TODO: change to higher
+#define LOAD_FACTOR_THRESHOLD 0.75 // TODO: change to higher
 #define REHASH_DIST_WIDTH_INC_FACTOR 4
 
 #include "dynamic_array.hpp"
