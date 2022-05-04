@@ -85,12 +85,12 @@ class hashmap
         // make a copy of entries
         entry<std::string,V,int>* bucket = entries.dump();
 
-        // clear translation, entries, and entry count
-        // entries.count = 0;
-        translation.fill(TRANSLATION_NULL_VAL);
-
         // multiply distribution width
         translation.reserve( translation.capacity * REHASH_DIST_WIDTH_INC_FACTOR );
+
+        // clear translation, entries, and entry count
+        entries.count = 0;
+        translation.fill(TRANSLATION_NULL_VAL);
 
         // push entries onto expanded distribution
         for ( unsigned int lcv = 0; lcv < e_ct; lcv++ )
