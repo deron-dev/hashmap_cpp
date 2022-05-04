@@ -1,5 +1,4 @@
 
-// TODO: visualization of hashmap
 // TODO: delete mapping
 // TODO: rehash
 // TODO: allow more/any data type keys
@@ -131,6 +130,101 @@ class hashmap
                     "key \"" + newentry.key + "\" already exists;"
                 );
             }
+        }
+    }
+
+    void unmap( std::string lookup_key )
+    {
+        entry<std::string,V,int>* eptr = NULL;
+        entry<std::string,V,int>* eptr2 = NULL;
+        // generate hash and apply distribution width
+        unsigned int t_index = djk33(lookup_key) % translation.capacity;
+        int translation_record = translation[t_index];
+        entry<std::string,V,int>* prev_entry = NULL;
+        entry<std::string,V,int>* last_entry = &entries[entries.count - 1];
+        int unmap_index;
+
+        // translation record indicates nonexistent key
+        if ( translation_record == -1 )
+        {
+            throw std::runtime_error
+            (
+                "hashmap::[](std::string lookup_key) " \
+                "no translation for key \"" + lookup_key + "\"; i.e., "\
+                "key does not exist in map"
+            );
+        }
+        // follow translation to entry
+        eptr = &entries[translation_record];
+
+
+        // while current entry does not match lookup_key, go to the next
+        // ...entry with the same hash using the meta value
+        while ( eptr->key != lookup_key && eptr->meta != -1 )
+        {
+            prev_entry = eptr;
+            eptr = &entries[eptr->meta];
+        }
+        if ( eptr->key == lookup_key ) // found matching entry
+        {
+            // unmap_index = eptr->meta; // save index to be filled later
+
+            // if found entry's hash is unique, update translation record to -1
+            if ( prev_entry == NULL )
+            {
+                unmap_index = translation_record; // save initial translation
+                translation[t_index] = -1;
+            }
+            else
+            {
+                // "remove" the matching entry by transferring its meta value
+                //      to the previous entry.
+                unmap_index = prev_entry->meta;
+                prev_entry->meta = eptr->meta;
+            }
+
+            // determine the entry preceding the last entry in "entries"
+            //      or determine last entry is only entry with its hash
+
+            t_index = djk33(last_entry->key) % translation.capacity;
+            translation_record = translation[t_index];
+
+            if ( eptr->key != last_entry->key )
+            {
+                eptr2 = &entries[translation_record]; // follow translation to entry
+
+                // if more than one entry with last_entry's hash, find preceding entry
+                if ( last_entry->meta != -1 )
+                {
+                    // while current entry does not match lookup_key, go to the next
+                    // ...entry with the same hash using the meta value
+                    while ( eptr2->key != last_entry->key && eptr2->meta != -1 )
+                    {
+                        prev_entry = eptr2;
+                        eptr2 = &entries[eptr->meta];
+                    }
+                    // update meta of entry preceding last_entry
+                    prev_entry->meta = unmap_index;
+                }
+                // else, update translation table to point at slot being filled
+                else
+                {
+                    translation[t_index] = unmap_index;
+                }
+            }
+
+            // take last entry in entries and move it to now empty space
+
+            *eptr = entry<std::string,std::string,int>( last_entry->key, last_entry->value, last_entry->meta );
+            entries.pop();
+
+        }
+        else
+        {
+            throw std::runtime_error
+            (
+                "key \"" + lookup_key + "\" does not exist in map"
+            );
         }
     }
 

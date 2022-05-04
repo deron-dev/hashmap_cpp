@@ -1,3 +1,5 @@
 ignore/
 *.out
 *.output
+.vscode/tasks.json
+demo

@@ -79,7 +79,7 @@ class array
         }
         else
         {
-            throw std::runtime_error("cannot use array::pop() ",
+            throw std::runtime_error("cannot use array::pop() "
                                       "on empty array");
         }
     }
