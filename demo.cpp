@@ -29,13 +29,13 @@ int main()
 
     themap.visualize();
 
-    while ( tempstr0 != "next" )
-    {
-        cout << "Unmap test: ";
-        cin >> tempstr0;
-        themap.unmap( tempstr0 );
-        themap.visualize();
-    }
+    // while ( tempstr0 != "next" )
+    // {
+    //     cout << "Unmap test: ";
+    //     cin >> tempstr0;
+    //     themap.unmap( tempstr0 );
+    //     themap.visualize();
+    // }
 
     // themap.visualize();
 
