@@ -15,7 +15,7 @@
 
 // initial hash distribution width
 // the default initial capacity of the translation array
-const unsigned int INITIAL_HASH_DIST_WIDTH = 100;
+const unsigned int INITIAL_HASH_DIST_WIDTH = 10;
 
 // this implementation of a hashmap currently only works with string-type keys
 template <typename K, typename V>
@@ -30,7 +30,7 @@ class hashmap
     hashmap()
     {
         entries = array<entry<K,V,int>>();
-        translation = array<int>();
+        translation = array<int>(INITIAL_HASH_DIST_WIDTH);
         translation.fill(-1);
         load_factor = 0;
     }
