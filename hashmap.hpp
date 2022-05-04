@@ -45,8 +45,11 @@ class hashmap
         load_factor = 0;
     }
 
-    V& operator[]( std::string lookup_key )
+    unsigned int hash( std::string wkey )
     {
+        // hash key, apply distribution width, return
+        return djk33( wkey ) % translation.capacity;
+    }
         entry<std::string,V,int>* eptr = NULL;
         // generate hash and apply to distribution
         unsigned int t_index = djk33(lookup_key) % translation.capacity;
