@@ -3,3 +3,5 @@ ignore/
 *.output
 .vscode/tasks.json
 demo
+*.odp
+.~lock.*
