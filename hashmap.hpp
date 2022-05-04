@@ -8,15 +8,17 @@
 #ifndef HASHMAP_H
 #define HASHMAP_H
 
+#define INITIAL_HASH_DIST_WIDTH 10
+#define TRANSLATION_NULL_VAL -1
+#define ENTRY_META_TERMINATOR -1
+
 #include "dynamic_array.hpp"
 #include "entry.hpp"
 #include "djk33.hpp"
 
 // initial hash distribution width
 // the default initial capacity of the translation array
-const unsigned int INITIAL_HASH_DIST_WIDTH = 10;
-const int TRANSLATION_NULL_VAL = -1;
-const int ENTRY_META_TERMINATOR = -1;
+
 
 // this implementation of a hashmap currently only works with string-type keys
 template <typename K, typename V>
