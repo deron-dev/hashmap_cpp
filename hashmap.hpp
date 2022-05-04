@@ -119,6 +119,9 @@ class hashmap
     {
         // TODO: rehash if necessary
 
+        int* translation_value;
+        entry<std::string,V,int>* eptr;
+
         if ( key_exists(newentry.key) )
         {
             throw std::runtime_error
@@ -130,27 +133,36 @@ class hashmap
         {
             // get translation
             unsigned int t_index = hash( newentry.key );
-            int* translation_value = &translation[t_index];
-
-            if ( *translation_value != TRANSLATION_NULL_VAL )
-            {
-                // point to last entry added to current translation
-                entry<std::string,V,int>* eptr = &entries[*translation_value];
-
-                // update the formerly last entry of the translation
-                //      to point at the new entry's index
-                eptr->meta = entries.count - 1;
-            }
+            translation_value = &translation[t_index];
 
             // update new entry's meta value to terminator
+            // newentry.meta = ENTRY_META_TERMINATOR; // TODO: delete?
             newentry.meta = ENTRY_META_TERMINATOR;
 
             // push newentry
             entries.push( newentry );
 
-            // update translation
-            *translation_value = entries.count - 1;
+            if ( *translation_value != TRANSLATION_NULL_VAL )
+            {
+                // point to last entry added to current translation
+                eptr = &entries[*translation_value];
 
+                while ( eptr->meta != ENTRY_META_TERMINATOR )
+                {
+                    eptr = &entries[eptr->meta];
+                }
+
+                // update the formerly last entry of the translation
+                //      to point at the new entry's index
+                eptr->meta = entries.count - 1;
+            }
+            else
+            {
+                // update translation
+                *translation_value = entries.count - 1;
+            }
+
+            int trash = 0; // TODO: remove testing
         }
 
         // ===
@@ -305,50 +317,85 @@ class hashmap
 
     void visualize()
     {
-        entry<K,V,int> wentry;
-        int wtranslation;
-        int t_index;
+        entry<K,V,int>* eptr;
+        int t_val;
+        unsigned int t_index;
         int e_index;
+        bool cont = true;
 
-        // parse translation array
         for ( t_index = 0; t_index < translation.capacity; t_index++ )
         {
-            // current translation => wtranslation
-            wtranslation = translation[t_index];
 
-            // check for empty translation
-            if ( wtranslation != TRANSLATION_NULL_VAL )
+            t_val = translation[t_index];
+
+            std::cout << t_index << ": ";
+
+            if ( t_val != TRANSLATION_NULL_VAL )
             {
-                // output translation index and value
-                std::cout << t_index << ": " << wtranslation << std::endl;
+                std::cout << t_val << std::endl;
 
-                // parse entries from current translation until last entry
-                e_index = wtranslation;
-                while ( entries[e_index].meta != ENTRY_META_TERMINATOR )
+                eptr = &entries[t_val];
+
+                while ( eptr->meta != ENTRY_META_TERMINATOR )
                 {
-                    // current entry => wentry
-                    wentry = entries[e_index];
-
-                    // output entry's key/value pair
-                    std::cout << "- " << wentry.key << " --> " << wentry.value << std::endl;
-
-                    // update e_index to next entry to seek to
-                    e_index = wentry.meta;
+                    std::cout << "- " << eptr->key << " --> " << eptr->value << std::endl;
+                    eptr = &entries[eptr->meta];
                 }
-                // output last entry
 
-                // current entry => wentry
-                wentry = entries[e_index];
+                std::cout << "- " << eptr->key << " --> " << eptr->value << std::endl;
 
-                // output entry's key/value pair
-                std::cout << "- " << wentry.key << " --> " << wentry.value << std::endl;
             }
             else
             {
-                std::cout << t_index << ": " << wtranslation << std::endl;
+                std::cout << TRANSLATION_NULL_VAL << std::endl;
             }
 
         }
+
+        // entry<K,V,int> wentry;
+        // int wtranslation;
+        // int t_index;
+        // int e_index;
+
+        // // parse translation array
+        // for ( t_index = 0; t_index < translation.capacity; t_index++ )
+        // {
+        //     // current translation => wtranslation
+        //     wtranslation = translation[t_index];
+
+        //     // check for empty translation
+        //     if ( wtranslation != TRANSLATION_NULL_VAL )
+        //     {
+        //         // output translation index and value
+        //         std::cout << t_index << ": " << wtranslation << std::endl;
+
+        //         // parse entries from current translation until last entry
+        //         e_index = wtranslation;
+        //         while ( entries[e_index].meta != ENTRY_META_TERMINATOR )
+        //         {
+        //             // current entry => wentry
+        //             wentry = entries[e_index];
+
+        //             // output entry's key/value pair
+        //             std::cout << "- " << wentry.key << " --> " << wentry.value << std::endl;
+
+        //             // update e_index to next entry to seek to
+        //             e_index = wentry.meta;
+        //         }
+        //         // output last entry
+
+        //         // current entry => wentry
+        //         wentry = entries[e_index];
+
+        //         // output entry's key/value pair
+        //         std::cout << "- " << wentry.key << " --> " << wentry.value << std::endl;
+        //     }
+        //     else
+        //     {
+        //         std::cout << t_index << ": " << wtranslation << std::endl;
+        //     }
+
+        // }
     }
 
     ~hashmap() {}
