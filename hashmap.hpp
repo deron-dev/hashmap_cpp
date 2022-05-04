@@ -15,6 +15,8 @@
 // initial hash distribution width
 // the default initial capacity of the translation array
 const unsigned int INITIAL_HASH_DIST_WIDTH = 10;
+const int TRANSLATION_NULL_VAL = -1;
+const int ENTRY_META_TERMINATOR = -1;
 
 // this implementation of a hashmap currently only works with string-type keys
 template <typename K, typename V>
@@ -30,7 +32,7 @@ class hashmap
     {
         entries = array<entry<K,V,int>>();
         translation = array<int>(INITIAL_HASH_DIST_WIDTH);
-        translation.fill(-1);
+        translation.fill(TRANSLATION_NULL_VAL);
         load_factor = 0;
     }
 
@@ -39,7 +41,7 @@ class hashmap
     {
         entries = array<entry<K,V,int>>(initial_capacity);
         translation = array<int>(distribution_width);
-        translation.fill(-1);
+        translation.fill(TRANSLATION_NULL_VAL);
         load_factor = 0;
     }
 
@@ -96,12 +98,12 @@ class hashmap
         translation_record = &translation[t_index];
 
         // if the hash has not been translated
-        if ( *translation_record == -1 )
+        if ( *translation_record == TRANSLATION_NULL_VAL )
         {
             // update translation record with new entry's index
             *translation_record = entries.count;
             // set new entry's index to terminator
-            newentry.meta = -1;
+            newentry.meta = ENTRY_META_TERMINATOR;
             // push new entry
             entries.push( newentry );
         }
@@ -248,14 +250,14 @@ class hashmap
             wtranslation = translation[t_index];
 
             // check for empty translation
-            if ( wtranslation != -1 )
+            if ( wtranslation != TRANSLATION_NULL_VAL )
             {
                 // output translation index and value
                 std::cout << t_index << ": " << wtranslation << std::endl;
 
                 // parse entries from current translation until last entry
                 e_index = wtranslation;
-                while ( entries[e_index].meta != -1 )
+                while ( entries[e_index].meta != ENTRY_META_TERMINATOR )
                 {
                     // current entry => wentry
                     wentry = entries[e_index];
