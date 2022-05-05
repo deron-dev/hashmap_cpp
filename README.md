@@ -3,7 +3,7 @@ A hashmap implementation I wrote for some coursework.
 
 ## TODO:
 
-- make implementation type-universal -- can only use with string keys currently
+- make hashmap keys type-universal -- can only use with string keys currently
 
 ## How to Implement
 
