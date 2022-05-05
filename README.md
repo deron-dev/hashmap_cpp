@@ -22,4 +22,4 @@ Just make sure to update the path to `hashmap.hpp` if it is not in the same dire
 
 ## Contribute
 
-Pull requests / issues submissions are welcome :)
+Pull requests / issues submission are welcome :)
